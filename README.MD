@@ -13,7 +13,7 @@ To enable the plugin add the following lines to your `project/plugins.sbt` file:
 ```scala
 resolvers += Resolver.bintrayIvyRepo("rubendg", "sbt-plugins")
 
-addSbtPlugin("nl.rubendegooijer.sbt" % "sbt-docker-image-annotation" % "0.1.0")
+addSbtPlugin("com.github.rubendg.sbtdima" % "sbt-docker-image-annotation" % "0.1.0")
 ```
 
 The plugin currently supports sbt versions `>= 0.13.16` and `1.x`, and is tested against `sbt-native-packager`

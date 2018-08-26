@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt.dima
+package com.github.rubendg.sbtdima
 
 import java.net.URL
 

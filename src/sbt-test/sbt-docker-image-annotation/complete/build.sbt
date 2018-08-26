@@ -1,7 +1,7 @@
 import sbt.Keys._
 
 import java.time.Instant
-import nl.rubendegooijer.sbt.dima.Ref
+import com.github.rubendg.sbtdima.Ref
 
 version := "1.0"
 name := "Cookie Delivery Service"

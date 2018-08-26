@@ -19,16 +19,40 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt.dima
+package com.github.rubendg
+package sbtdima
 
-import java.net.URL
+import DockerLabel._
+import org.scalatest.{Matchers, WordSpec}
 
-import scala.util.Try
+final class DockerLabelSpec extends WordSpec with Matchers {
 
-trait VcsSupport {
+  "label" should {
 
-  def revision: Try[String]
+    "quote values" in {
+      label("a", "b") shouldBe """a="b""""
+    }
 
-  def source: Try[URL]
+  }
+
+  "fromMap" should {
+
+    "when the map is empty return no labels" in {
+      fromMap(Map.empty[String, String]) shouldBe None
+    }
+
+    "when the map contains a single element do the same as label" in {
+      fromMap(Map("a" -> "b")) shouldBe Some(label("a", "b"))
+    }
+
+    "separate labels by spaces" in {
+      fromMap(Map("a" -> "b", "b" -> "c")) shouldBe Some("""a="b" b="c"""")
+    }
+
+    "sort labels by key" in {
+      fromMap(Map("b" -> "c", "a" -> "b")) shouldBe Some("""a="b" b="c"""")
+    }
+
+  }
 
 }

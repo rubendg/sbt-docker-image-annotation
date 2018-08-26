@@ -5,7 +5,7 @@ lazy val repo = "https://github.com/rubendg/sbt-docker-image-annotation"
 lazy val buildSettings =
   Seq(
     name := "sbt-docker-image-annotation",
-    organization := "nl.rubendegooijer.sbt",
+    organization := "com.github.rubendg.sbtdima",
     organizationName := "Ruben de Gooijer",
     description :=
       """

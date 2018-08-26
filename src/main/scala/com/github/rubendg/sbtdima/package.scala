@@ -19,39 +19,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt.dima
+package com.github.rubendg
 
-import nl.rubendegooijer.sbt.dima.DockerLabel._
-import org.scalatest.{Matchers, WordSpec}
+package object sbtdima {
 
-final class DockerLabelSpec extends WordSpec with Matchers {
-
-  "label" should {
-
-    "quote values" in {
-      label("a", "b") shouldBe """a="b""""
-    }
-
-  }
-
-  "fromMap" should {
-
-    "when the map is empty return no labels" in {
-      fromMap(Map.empty[String, String]) shouldBe None
-    }
-
-    "when the map contains a single element do the same as label" in {
-      fromMap(Map("a" -> "b")) shouldBe Some(label("a", "b"))
-    }
-
-    "separate labels by spaces" in {
-      fromMap(Map("a" -> "b", "b" -> "c")) shouldBe Some("""a="b" b="c"""")
-    }
-
-    "sort labels by key" in {
-      fromMap(Map("b" -> "c", "a" -> "b")) shouldBe Some("""a="b" b="c"""")
-    }
-
+  private[sbtdima] implicit class EnhancedSeq[T](val s: Seq[Option[T]]) extends AnyVal {
+    def pickFirst: Option[T] = s.find(_.nonEmpty).flatten
   }
 
 }

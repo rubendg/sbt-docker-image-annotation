@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt.dima
+package com.github.rubendg.sbtdima
 
 import java.time.Instant
 
@@ -40,7 +40,7 @@ final case class ImageAnnotation(created: Option[Instant] = None,
 
 final case class Ref(name: Option[String] = None)
 
-private[sbt] object ImageAnnotation {
+private[sbtdima] object ImageAnnotation {
 
   /**
     *
@@ -48,7 +48,7 @@ private[sbt] object ImageAnnotation {
     * @param labels
     * @return
     */
-  private[sbt] def ns(name: String, labels: Map[String, String]): Map[String, String] =
+  private[sbtdima] def ns(name: String, labels: Map[String, String]): Map[String, String] =
     labels.map { case (k, v) => (s"$name.$k", v) }
 
   /**
@@ -56,7 +56,7 @@ private[sbt] object ImageAnnotation {
     * @param imageAnnotation
     * @return
     */
-  private[sbt] def toMap(imageAnnotation: ImageAnnotation): Map[String, String] = {
+  private[sbtdima] def toMap(imageAnnotation: ImageAnnotation): Map[String, String] = {
 
     def formatImageAnnotation(imageAnnotation: ImageAnnotation): Map[String, String] = {
       import imageAnnotation._

@@ -19,44 +19,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt.dima
+package com.github.rubendg.sbtdima
 
 import java.net.URL
 
-import scala.sys.process.Process
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
-private object GitSupport {
+trait VcsSupport {
 
-  private def parseRemoteUrl(url: String): Option[URL] = {
-    if (url.startsWith("https")) Some(url)
-    else {
-      val extractDomainAndRepo = "^git@([a-z.]+):(.*)".r
-      url match {
-        case extractDomainAndRepo(domain, repo) =>
-          Some(s"https://$domain/$repo")
-        case _ => None
-      }
-    }
-  }.flatMap(url => Try(new URL(url)).toOption)
+  def revision: Try[String]
 
-}
+  def source: Try[URL]
 
-class GitSupport extends VcsSupport {
-  import GitSupport._
-
-  protected def headLines(cmd: String): Try[String] =
-    Try(Process(cmd).!!).map(_.split("\n").head)
-
-  override def revision: Try[String] = headLines("git rev-parse --verify HEAD")
-
-  override def source: Try[URL] = {
-    val remoteUrl = headLines("git config --get remote.origin.url")
-    remoteUrl.flatMap(url => {
-      parseRemoteUrl(url) match {
-        case Some(u) => Success(u)
-        case None    => Failure(new IllegalArgumentException(s"Failed to parse remote url: $url"))
-      }
-    })
-  }
 }

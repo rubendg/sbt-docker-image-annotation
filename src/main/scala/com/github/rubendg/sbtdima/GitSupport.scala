@@ -19,30 +19,44 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt.dima
+package com.github.rubendg.sbtdima
 
-private[sbt] object DockerLabel {
+import java.net.URL
 
-  /**
-    *
-    * @param k
-    * @param v
-    * @return
-    */
-  def label(k: String, v: String): String = s"""$k="$v""""
+import scala.sys.process.Process
+import scala.util.{Failure, Success, Try}
 
-  /**
-    *
-    * @param labels
-    * @return
-    */
-  def fromMap(labels: Map[String, String]): Option[String] =
-    if (labels.isEmpty) None
-    else
-      Some {
-        labels.toSeq
-          .sortBy(_._1)
-          .map { case (k, v) => label(k, v) }
-          .mkString(" ")
+private object GitSupport {
+
+  private def parseRemoteUrl(url: String): Option[URL] = {
+    if (url.startsWith("https")) Some(url)
+    else {
+      val extractDomainAndRepo = "^git@([a-z.]+):(.*)".r
+      url match {
+        case extractDomainAndRepo(domain, repo) =>
+          Some(s"https://$domain/$repo")
+        case _ => None
       }
+    }
+  }.flatMap(url => Try(new URL(url)).toOption)
+
+}
+
+class GitSupport extends VcsSupport {
+  import GitSupport._
+
+  protected def headLines(cmd: String): Try[String] =
+    Try(Process(cmd).!!).map(_.split("\n").head)
+
+  override def revision: Try[String] = headLines("git rev-parse --verify HEAD")
+
+  override def source: Try[URL] = {
+    val remoteUrl = headLines("git config --get remote.origin.url")
+    remoteUrl.flatMap(url => {
+      parseRemoteUrl(url) match {
+        case Some(u) => Success(u)
+        case None    => Failure(new IllegalArgumentException(s"Failed to parse remote url: $url"))
+      }
+    })
+  }
 }

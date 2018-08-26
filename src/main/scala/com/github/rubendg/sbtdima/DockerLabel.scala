@@ -19,12 +19,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.rubendegooijer.sbt
+package com.github.rubendg.sbtdima
 
-package object dima {
+private[sbtdima] object DockerLabel {
 
-  private[dima] implicit class EnhancedSeq[T](val s: Seq[Option[T]]) extends AnyVal {
-    def pickFirst: Option[T] = s.find(_.nonEmpty).flatten
-  }
+  /**
+    *
+    * @param k
+    * @param v
+    * @return
+    */
+  def label(k: String, v: String): String = s"""$k="$v""""
 
+  /**
+    *
+    * @param labels
+    * @return
+    */
+  def fromMap(labels: Map[String, String]): Option[String] =
+    if (labels.isEmpty) None
+    else
+      Some {
+        labels.toSeq
+          .sortBy(_._1)
+          .map { case (k, v) => label(k, v) }
+          .mkString(" ")
+      }
 }
